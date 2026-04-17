@@ -24,7 +24,7 @@ Including another URLconf
 
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from analytics import views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -36,6 +36,8 @@ urlpatterns = [
     path('', views.login_page, name="login"),
 
     path('dashboard/', views.dashboard_page, name="dashboard"),
+
+    path('api/auth/', include('accounts.urls')),
 
 ]
 
