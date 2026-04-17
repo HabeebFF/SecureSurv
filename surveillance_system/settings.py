@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'tracking',
 ]
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.Admin'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
