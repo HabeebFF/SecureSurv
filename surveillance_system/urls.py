@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/auth/', include('accounts.urls')),
     path('api/recognition/', include('recognition.urls')),
     path('api/cameras/', include('cameras.urls')),
+    path('api/alerts/', include('alerts.urls')),
 
 ]
 
