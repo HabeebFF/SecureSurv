@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
-class Admin(AbstractUser):
+class User(AbstractUser):
     ROLE_CHOICES = (
         ("admin", "Admin"),
         ("security", "Security Personnel"),
