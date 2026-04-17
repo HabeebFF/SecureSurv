@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'cameras',
     'recognition',
     'tracking',
+    'surveillance_system',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
