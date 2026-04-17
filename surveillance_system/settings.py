@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-hc^w*dr!3sjyyu3$0hnm)5v77f)-4p2flnm+tx(=-=$(3=rlv!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["securesurv.pythonanywhere.com"]
+ALLOWED_HOSTS = ["securesurv.pythonanywhere.com", "*"]
 
 
 # Application definition
@@ -164,5 +164,6 @@ REST_FRAMEWORK = {
 
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://securesurv.pythonanywhere.com"
+    "https://securesurv.pythonanywhere.com",
+    "*"
 ]
