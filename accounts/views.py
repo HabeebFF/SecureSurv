@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAdminUser, AllowAny
 
-from .models import Admin
+from .models import User as Admin
 
 
 class CreateAdminView(APIView):
