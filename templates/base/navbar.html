@@ -1,0 +1,25 @@
+<div class="navbar">
+
+    <div class="navbar-left">
+
+        <h2>Smart Surveillance</h2>
+
+    </div>
+
+    <div class="navbar-right">
+
+        <div class="alerts">
+            🔔
+        </div>
+
+        <div class="user">
+
+            <span>{{ request.user.username }}</span>
+
+            <a href="{% url 'logout' %}">Logout</a>
+
+        </div>
+
+    </div>
+
+</div>

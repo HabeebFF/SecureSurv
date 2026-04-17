@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>{% block title %}Smart Surveillance{% endblock %}</title>
+
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- Sidebar -->
+    {% include "base/sidebar.html" %}
+
+    <div class="main-content">
+
+        <!-- Navbar -->
+        {% include "base/navbar.html" %}
+
+        <!-- Page Content -->
+        <div class="content">
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+
+</body>
+
+</html>

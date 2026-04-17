@@ -1,0 +1,245 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo">
+SSS
+<p>Surveillance</p>
+</div>
+
+<ul>
+
+<li class="active">Dashboard</li>
+<li>Cameras</li>
+<li>Face Database</li>
+<li>Detection Logs</li>
+<li>Alerts</li>
+<li>Analytics</li>
+<li>Device Tracking</li>
+
+</ul>
+
+</div>
+
+
+<!-- MAIN AREA -->
+
+<div class="main">
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="system-title">
+Smart Surveillance System
+</div>
+
+<div class="nav-right">
+
+<span class="notification">🔔</span>
+
+<div class="user">
+Admin
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- PAGE TITLE -->
+
+<h1 class="page-title">Dashboard</h1>
+<p class="subtitle">Overview of surveillance system activity</p>
+
+
+
+<!-- STATS CARDS -->
+
+<div class="stats">
+
+<div class="card">
+<h2>48</h2>
+<p>Total Cameras</p>
+</div>
+
+<div class="card">
+<h2>42</h2>
+<p>Active Cameras</p>
+</div>
+
+<div class="card">
+<h2>156</h2>
+<p>Detections Today</p>
+</div>
+
+<div class="card">
+<h2>7</h2>
+<p>Active Alerts</p>
+</div>
+
+<div class="card">
+<h2>1243</h2>
+<p>Known Faces</p>
+</div>
+
+<div class="card">
+<h2>23</h2>
+<p>Unknown Faces</p>
+</div>
+
+</div>
+
+
+
+<!-- LIVE CAMERAS -->
+
+<h2 class="section-title">Live Camera Feeds</h2>
+
+<div class="camera-grid">
+
+<div class="camera-card">
+<div class="camera-placeholder">📷</div>
+<p>CAM-01</p>
+<span>Main Entrance</span>
+</div>
+
+<div class="camera-card">
+<div class="camera-placeholder">📷</div>
+<p>CAM-02</p>
+<span>Parking Lot</span>
+</div>
+
+<div class="camera-card">
+<div class="camera-placeholder">📷</div>
+<p>CAM-03</p>
+<span>Server Room</span>
+</div>
+
+<div class="camera-card">
+<div class="camera-placeholder">📷</div>
+<p>CAM-04</p>
+<span>Lobby</span>
+</div>
+
+</div>
+
+
+
+<!-- MAP -->
+
+<div class="map-section">
+
+<h2>Camera Locations</h2>
+
+<div class="map-placeholder">
+
+Map integration area — Leaflet / Mapbox
+
+</div>
+
+</div>
+
+
+
+<!-- RECENT DETECTIONS -->
+
+<div class="detections">
+
+<h2>Recent Detections</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Person</th>
+<th>Camera</th>
+<th>Confidence</th>
+<th>Time</th>
+<th>Image</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>John Smith</td>
+<td>CAM-01</td>
+<td class="high">98.2%</td>
+<td>14:32</td>
+<td>📷</td>
+</tr>
+
+<tr>
+<td>Unknown #4521</td>
+<td>CAM-03</td>
+<td class="medium">67.1%</td>
+<td>14:28</td>
+<td>📷</td>
+</tr>
+
+<tr>
+<td>Sarah Chen</td>
+<td>CAM-02</td>
+<td class="high">95.7%</td>
+<td>14:15</td>
+<td>📷</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+
+
+<!-- CHARTS -->
+
+<div class="charts">
+
+<div class="chart-card">
+<h3>Detection Activity</h3>
+<canvas id="activityChart"></canvas>
+</div>
+
+<div class="chart-card">
+<h3>Detections per Camera</h3>
+<canvas id="cameraChart"></canvas>
+</div>
+
+<div class="chart-card">
+<h3>Known vs Unknown</h3>
+<canvas id="faceChart"></canvas>
+</div>
+
+</div>
+
+
+</div>
+</div>
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+
+</body>
+</html>
