@@ -27,10 +27,3 @@ class Person(models.Model):
 
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
 
-
-class Person(models.Model):
-    name = models.CharField(max_length=100)
-    photo = models.ImageField(upload_to="faces/")
-    encoding = models.BinaryField()
-    is_wanted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
