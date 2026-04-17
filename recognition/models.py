@@ -11,6 +11,3 @@ class DetectionEvent(models.Model):
     confidence = models.FloatField()
     image = models.ImageField(upload_to="detections/")
     timestamp = models.DateTimeField(auto_now_add=True)
-    confidence = models.FloatField()
-    image = models.ImageField(upload_to="detections/")
-    timestamp = models.DateTimeField(auto_now_add=True)

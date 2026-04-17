@@ -8,5 +8,5 @@ class Camera(models.Model):
     location_name = models.CharField(max_length=100)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    stream_url = models.URLField()
+    stream_url = models.URLField(blank=True, default="")
     is_active = models.BooleanField(default=True)

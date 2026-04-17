@@ -1,12 +1,16 @@
+import pickle
+
+import face_recognition
 from django.contrib.auth import authenticate
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
-from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 
-from .models import User as Admin, Person
+from .models import Person
+from .models import User as Admin
 
 
 class CreateAdminView(APIView):
@@ -101,6 +105,22 @@ def logout_view(request):
     return Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
 
 
+class GetAllUsersView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        users = Admin.objects.values("id", "username", "email", "first_name", "last_name", "role", "is_active")
+        return Response(list(users), status=status.HTTP_200_OK)
+
+
+class GetAllPersonsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        persons = Person.objects.values("id", "name", "is_wanted", "created_at", "photo")
+        return Response(list(persons), status=status.HTTP_200_OK)
+
+
 class AddPersonView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -115,11 +135,23 @@ class AddPersonView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        image = face_recognition.load_image_file(photo)
+        encodings = face_recognition.face_encodings(image)
+
+        if not encodings:
+            return Response(
+                {"error": "No face detected in the photo. Please use a clear face image."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        encoding = pickle.dumps(encodings[0])
+
+        photo.seek(0)
         person = Person.objects.create(
             name=name,
             photo=photo,
             is_wanted=is_wanted,
-            encoding=b"",
+            encoding=encoding,
         )
 
         return Response(
