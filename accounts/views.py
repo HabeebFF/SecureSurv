@@ -3,9 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
+from rest_framework.decorators import api_view
 
-from .models import User as Admin
+from .models import User as Admin, Person
 
 
 class CreateAdminView(APIView):
@@ -91,4 +92,43 @@ class AdminLoginView(APIView):
                 "role": user.role,
             },
             status=status.HTTP_200_OK,
+        )
+
+
+@api_view(["POST"])
+def logout_view(request):
+    request.auth.delete()
+    return Response({"message": "Logged out successfully."}, status=status.HTTP_200_OK)
+
+
+class AddPersonView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        name = request.data.get("name")
+        photo = request.FILES.get("photo")
+        is_wanted = request.data.get("is_wanted", False)
+
+        if not name or not photo:
+            return Response(
+                {"error": "name and photo are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        person = Person.objects.create(
+            name=name,
+            photo=photo,
+            is_wanted=is_wanted,
+            encoding=b"",
+        )
+
+        return Response(
+            {
+                "message": "Person profile added successfully.",
+                "id": person.id,
+                "name": person.name,
+                "is_wanted": person.is_wanted,
+                "photo": request.build_absolute_uri(person.photo.url),
+            },
+            status=status.HTTP_201_CREATED,
         )
