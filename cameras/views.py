@@ -46,5 +46,5 @@ class GetAllCamerasView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        cameras = Camera.objects.values("id", "name", "location_name", "latitude", "longitude", "is_active")
+        cameras = Camera.objects.values("id", "name", "location_name", "latitude", "longitude", "is_active", "stream_url")
         return Response(list(cameras), status=status.HTTP_200_OK)
