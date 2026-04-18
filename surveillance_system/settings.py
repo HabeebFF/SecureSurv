@@ -166,3 +166,11 @@ REST_FRAMEWORK = {
 CSRF_TRUSTED_ORIGINS = [
     "https://securesurv.pythonanywhere.com"
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5500",
+    "http://localhost:3000",
+]
