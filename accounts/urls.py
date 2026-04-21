@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateAdminView, AdminLoginView, AddPersonView, GetAllUsersView, GetAllPersonsView, logout_view
+from .views import CreateAdminView, AdminLoginView, AddPersonView, GetAllUsersView, GetAllPersonsView, logout_view, ToggleWantedStatusView
 
 urlpatterns = [
     path('create-admin/', CreateAdminView.as_view(), name='create-admin'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('users/', GetAllUsersView.as_view(), name='get-all-users'),
     path('persons/', GetAllPersonsView.as_view(), name='get-all-persons'),
     path('persons/add/', AddPersonView.as_view(), name='add-person'),
+    path('persons/<int:person_id>/toggle-wanted/', ToggleWantedStatusView.as_view(), name='toggle-wanted-status'),
 ]

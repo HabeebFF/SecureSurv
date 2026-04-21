@@ -121,6 +121,29 @@ class GetAllPersonsView(APIView):
         return Response(list(persons), status=status.HTTP_200_OK)
 
 
+class ToggleWantedStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, person_id):
+        try:
+            person = Person.objects.get(id=person_id)
+        except Person.DoesNotExist:
+            return Response({"error": "Person not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        person.is_wanted = not person.is_wanted
+        person.save(update_fields=["is_wanted"])
+
+        return Response(
+            {
+                "message": f"{'Marked as wanted' if person.is_wanted else 'Removed from wanted list'}.",
+                "id": person.id,
+                "name": person.name,
+                "is_wanted": person.is_wanted,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
 class AddPersonView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -128,6 +151,8 @@ class AddPersonView(APIView):
         name = request.data.get("name")
         photo = request.FILES.get("photo")
         is_wanted = request.data.get("is_wanted", False)
+
+        is_wanted = str(is_wanted).lower() in ["true", "1", "yes"]
 
         if not name or not photo:
             return Response(
