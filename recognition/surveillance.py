@@ -23,8 +23,27 @@ def _load_wanted_persons():
     return result
 
 
+def _resolve_stream_source(url):
+    if not url:
+        return 0
+    if "youtube.com" in url or "youtu.be" in url:
+        try:
+            import yt_dlp
+            ydl_opts = {"quiet": True, "format": "best[ext=mp4]/best"}
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                info = ydl.extract_info(url, download=False)
+                formats = info.get("formats") or []
+                direct_url = info.get("url") or (formats[-1].get("url") if formats else None)
+                if direct_url:
+                    print(f"[SURVEILLANCE] Resolved YouTube URL for '{url}'")
+                    return direct_url
+        except Exception as e:
+            print(f"[SURVEILLANCE] yt-dlp error: {e}")
+    return url
+
+
 def _watch_camera(camera, stop_event):
-    source = camera.stream_url if camera.stream_url else 0
+    source = _resolve_stream_source(camera.stream_url)
     print(f"[SURVEILLANCE] Started — '{camera.name}' (source: {source})")
 
     cap = cv2.VideoCapture(source)

@@ -5,3 +5,4 @@ Pillow
 face_recognition
 numpy
 django-cors-headers
+yt-dlp
