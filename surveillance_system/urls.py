@@ -41,6 +41,8 @@ urlpatterns = [
     path('api/recognition/', include('recognition.urls')),
     path('api/cameras/', include('cameras.urls')),
     path('api/alerts/', include('alerts.urls')),
+    path('api/analytics/', include('analytics.urls')),
+    path('api/tracking/', include('tracking.urls')),
 
 ]
 

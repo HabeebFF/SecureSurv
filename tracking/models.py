@@ -1,9 +1,10 @@
 from django.db import models
+from accounts.models import User
 
-# Create your models here.
 
-class DeviceLocation(models.Model):
-    device_id = models.CharField(max_length=100)
+class UserLocation(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="location")
     latitude = models.FloatField()
     longitude = models.FloatField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    tracking_enabled = models.BooleanField(default=False)
+    last_updated = models.DateTimeField(auto_now=True)

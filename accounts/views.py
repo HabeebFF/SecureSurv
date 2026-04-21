@@ -9,7 +9,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 
-from .models import Person
+from .models import Person, PersonEncoding
 from .models import User as Admin
 
 
@@ -179,6 +179,9 @@ class AddPersonView(APIView):
             encoding=encoding,
         )
 
+        photo.seek(0)
+        PersonEncoding.objects.create(person=person, photo=photo, encoding=encoding)
+
         return Response(
             {
                 "message": "Person profile added successfully.",
@@ -186,6 +189,44 @@ class AddPersonView(APIView):
                 "name": person.name,
                 "is_wanted": person.is_wanted,
                 "photo": request.build_absolute_uri(person.photo.url),
+                "total_encodings": 1,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class AddPersonPhotoView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, person_id):
+        try:
+            person = Person.objects.get(id=person_id)
+        except Person.DoesNotExist:
+            return Response({"error": "Person not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        photo = request.FILES.get("photo")
+        if not photo:
+            return Response({"error": "photo is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        image = face_recognition.load_image_file(photo)
+        encodings = face_recognition.face_encodings(image)
+
+        if not encodings:
+            return Response(
+                {"error": "No face detected in the photo. Please use a clear face image."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        encoding = pickle.dumps(encodings[0])
+        photo.seek(0)
+        PersonEncoding.objects.create(person=person, photo=photo, encoding=encoding)
+
+        return Response(
+            {
+                "message": "Photo added successfully.",
+                "person_id": person.id,
+                "name": person.name,
+                "total_encodings": person.face_encodings.count(),
             },
             status=status.HTTP_201_CREATED,
         )

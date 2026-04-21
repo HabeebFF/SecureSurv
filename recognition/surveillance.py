@@ -1,4 +1,5 @@
 import pickle
+import sys
 import threading
 import time
 
@@ -13,11 +14,11 @@ ENCODINGS_RELOAD = 30
 
 
 def _load_wanted_persons():
-    from accounts.models import Person
+    from accounts.models import PersonEncoding
     result = []
-    for person in Person.objects.filter(is_wanted=True).exclude(encoding=b""):
+    for pe in PersonEncoding.objects.filter(person__is_wanted=True).select_related("person"):
         try:
-            result.append((person, pickle.loads(bytes(person.encoding))))
+            result.append((pe.person, pickle.loads(bytes(pe.encoding))))
         except Exception:
             continue
     return result
@@ -26,6 +27,8 @@ def _load_wanted_persons():
 def _resolve_stream_source(url):
     if not url:
         return 0
+    if url.isdigit():
+        return int(url)
     if "youtube.com" in url or "youtu.be" in url:
         try:
             import yt_dlp
@@ -46,14 +49,24 @@ def _watch_camera(camera, stop_event):
     source = _resolve_stream_source(camera.stream_url)
     print(f"[SURVEILLANCE] Started — '{camera.name}' (source: {source})")
 
-    cap = cv2.VideoCapture(source)
+    backends = [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY] if sys.platform == "win32" else [cv2.CAP_ANY]
+
+    def _open_cap():
+        for b in backends:
+            c = cv2.VideoCapture(source, b)
+            if c.isOpened():
+                return c
+            c.release()
+        return cv2.VideoCapture(source)
+
+    cap = _open_cap()
     known_persons = _load_wanted_persons()
     last_scan = 0
     last_reload = time.time()
 
     while not stop_event.is_set():
         if not cap.isOpened():
-            cap = cv2.VideoCapture(source)
+            cap = _open_cap()
             time.sleep(2)
             continue
 
@@ -95,10 +108,13 @@ def _scan_frame(frame, camera, known_persons):
     known_encodings = [enc for _, enc in known_persons]
     persons_list = [p for p, _ in known_persons]
 
+    alerted_this_frame = set()
+
     for face_enc in encodings:
         distances = face_recognition.face_distance(known_encodings, face_enc)
         for distance, person in zip(distances, persons_list):
-            if distance <= TOLERANCE:
+            if distance <= TOLERANCE and person.id not in alerted_this_frame:
+                alerted_this_frame.add(person.id)
                 confidence = round((1 - distance) * 100, 2)
                 _, buf = cv2.imencode(".jpg", frame)
                 image_file = ContentFile(buf.tobytes(), name=f"det_{timezone.now().timestamp()}.jpg")
@@ -117,8 +133,8 @@ def _scan_frame(frame, camera, known_persons):
 
 class SurveillanceManager:
     def __init__(self):
-        self._threads = {}      # camera_id -> Thread
-        self._stop_events = {}  # camera_id -> Event
+        self._threads = {}
+        self._stop_events = {}
         self._lock = threading.Lock()
 
     @property

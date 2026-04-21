@@ -18,3 +18,10 @@ class Person(models.Model):
     encoding = models.BinaryField()
     is_wanted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class PersonEncoding(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name="face_encodings")
+    photo = models.ImageField(upload_to="faces/")
+    encoding = models.BinaryField()
+    created_at = models.DateTimeField(auto_now_add=True)
