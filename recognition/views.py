@@ -85,3 +85,22 @@ class ScanFrameView(APIView):
             )
 
         return Response({"message": "No matches found."}, status=status.HTTP_200_OK)
+
+
+class DetectionListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        events = DetectionEvent.objects.select_related("person", "camera").order_by("-timestamp")
+        data = [
+            {
+                "id": e.id,
+                "person": e.person.name if e.person else None,
+                "camera": e.camera.name,
+                "confidence": e.confidence,
+                "image": request.build_absolute_uri(e.image.url) if e.image else None,
+                "timestamp": e.timestamp,
+            }
+            for e in events
+        ]
+        return Response(data, status=status.HTTP_200_OK)
